@@ -1,0 +1,21 @@
+{
+  "name": "hack-the-city",
+  "version": "0.1.0",
+  "description": "Mini MMORPG",
+  "scripts": {
+    "build": "tsc",
+    "start": "node dist",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@types/express": "^4.11.1",
+    "@types/node": "^9.6.5",
+    "tslint": "^5.9.1"
+  },
+  "dependencies": {
+    "body-parser": "^1.18.2",
+    "express": "^4.16.3"
+  }
+}
