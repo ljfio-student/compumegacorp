@@ -28,13 +28,14 @@ MongoClient.connect(databaseUrl, (error: MongoError, client: MongoClient) => {
     let db: Db = client.db(databaseName);
 
     // Passport authentication
-    passport.use(new BearerStrategy((token: string, done: (error: any, user: any) => void) => {
+    passport.use(new BearerStrategy((token: string, done: (error: any, user?: any) => void) => {
         db.collection('session').findOne<IUser>({token: token})
             .then((user) => {
                 done(null, user);
             })
             .catch((error) => {
                 console.error(error);
+                done(error);
             });
     }));
 
