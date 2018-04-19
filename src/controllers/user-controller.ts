@@ -1,20 +1,56 @@
 import express from "express";
-import { PassportStatic } from "passport";
+import passport from "passport";
 import { Db, Collection } from "mongodb";
-import { IUser, ISimpleUser } from "../models/user";
+import bcrypt from "bcrypt";
+import { IUser, ISimpleUser, ILoginRequest } from "../models/user";
 
 export class UserController {
     private collection: Collection;
 
     constructor(
-        private router: express.Router,
-        private db: Db,
-        private passport: PassportStatic)  {
+        router: express.Router,
+        private db: Db) {
 
         this.collection = db.collection('user');
 
         // Setup routes
-        router.get('/user/:id?', passport.authenticate('bearer', {session: false}), this.getUser.bind(this));
+        router.get('/user/:id?', passport.authenticate('bearer', { session: false }), this.getUser.bind(this));
+
+        // Login routes
+        router.post('/user/login', this.loginUser.bind(this));
+    }
+
+    private logAndReportServerError(res: express.Response) {
+        return (error: Error) => {
+            console.error(error);
+            res.status(500).send();
+        };
+    }
+
+    private loginUser(req: express.Request, res: express.Response) {
+        let data = req.body as ILoginRequest;
+
+        if (data != null) {
+            this.collection.findOne<IUser>({ email: data.email })
+                .then((user) => {
+                    if (user) {
+                        bcrypt.compare(data.password, user.password)
+                            .then((match) => {
+                                if (match) {
+
+                                } else {
+
+                                }
+                            })
+                            .catch(this.logAndReportServerError(res));
+                    } else {
+                        // We couldn't find the specified user
+                    }
+                })
+                .catch(this.logAndReportServerError(res));
+        } else {
+            res.status(400).end(); // Bad request - was not login request
+        }
     }
 
     private getUser(req: express.Request, res: express.Response) {

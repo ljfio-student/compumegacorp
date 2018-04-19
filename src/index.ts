@@ -43,7 +43,7 @@ MongoClient.connect(databaseUrl, (error: MongoError, client: MongoClient) => {
     let api = express.Router();
 
     // Initialise the controllers
-    controllers(api, db, passport);
+    controllers(api, db);
 
     app.use('/api/', api);
 });

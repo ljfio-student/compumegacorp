@@ -11,3 +11,9 @@ export interface ISimpleUser {
     _id: ObjectId;
     name: string;
 }
+
+export interface ILoginRequest {
+    email: string;
+    password: string;
+}
+
