@@ -1,7 +1,16 @@
 {
-  "name": "hack-the-city",
+  "name": "pirate-racing",
   "version": "0.1.0",
   "description": "Mini MMORPG",
+  "main": "index.js",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ljfio/pirate-racing.git"
+  },
+  "bugs": {
+    "url": "https://github.com/ljfio/pirate-racing/issues"
+  },
+  "homepage": "https://github.com/ljfio/pirate-racing#readme",
   "scripts": {
     "build": "tsc",
     "start": "node dist",
