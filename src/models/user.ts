@@ -17,3 +17,13 @@ export interface ILoginRequest {
     password: string;
 }
 
+export interface IRegisterRequest {
+    name: string;
+    email: string;
+    password: string;
+}
+
+export interface ISession {
+    userId: ObjectId;
+    token: string;
+}
