@@ -1,8 +1,10 @@
 <template>
   <div class="login container">
-      <form>
+      <form @submit.prevent="login">
         <fieldset>
             <legend>Login</legend>
+
+            <p v-if="$route.query.redirect">You need to login first.</p>
 
             <div class="form-group">
                 <label for="exampleInputEmail1">Email address</label>
