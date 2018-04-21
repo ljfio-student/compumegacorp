@@ -4,14 +4,17 @@ import { Db, Collection } from "mongodb";
 import bcrypt from "bcrypt";
 import { IUser, ISimpleUser, ILoginRequest, ISession } from "../models/user";
 import { v4 as uuid } from "uuid";
+import { Controller } from "./controller";
 
-export class UserController {
+export class UserController extends Controller {
     private collection: Collection;
     private sessionCollection: Collection;
 
     constructor(
         router: express.Router,
         private db: Db) {
+
+        super();
 
         this.collection = db.collection('user');
         this.sessionCollection = db.collection('session');
@@ -21,15 +24,8 @@ export class UserController {
 
         // Login routes
         router.post('/user/login', this.loginUser.bind(this));
-    }
 
-    private logAndReportServerError(res: express.Response) {
-        return (error: Error) => {
-            console.error(error);
-            res.status(500).send();
-        };
     }
-
     private loginUser(req: express.Request, res: express.Response) {
         let data = req.body as ILoginRequest;
 
