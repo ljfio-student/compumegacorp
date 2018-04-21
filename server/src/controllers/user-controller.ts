@@ -2,16 +2,19 @@ import express from "express";
 import passport from "passport";
 import { Db, Collection } from "mongodb";
 import bcrypt from "bcrypt";
-import { IUser, ISimpleUser, ILoginRequest } from "../models/user";
+import { IUser, ISimpleUser, ILoginRequest, ISession } from "../models/user";
+import { v4 as uuid } from "uuid";
 
 export class UserController {
     private collection: Collection;
+    private sessionCollection: Collection;
 
     constructor(
         router: express.Router,
         private db: Db) {
 
         this.collection = db.collection('user');
+        this.sessionCollection = db.collection('session');
 
         // Setup routes
         router.get('/user/:id?', passport.authenticate('bearer', { session: false }), this.getUser.bind(this));
@@ -37,14 +40,25 @@ export class UserController {
                         bcrypt.compare(data.password, user.password)
                             .then((match) => {
                                 if (match) {
+                                    var token = uuid();
 
+                                    var session = <ISession>{
+                                        userId: user._id,
+                                        token: token,
+                                    };
+
+                                    this.sessionCollection.insert(session)
+                                        .then(() => {
+                                            res.send({ token: token }).end();
+                                        })
+                                        .catch(this.logAndReportServerError(res));
                                 } else {
-
+                                    res.status(401).end(); // password doesn't match
                                 }
                             })
                             .catch(this.logAndReportServerError(res));
                     } else {
-                        // We couldn't find the specified user
+                        res.status(401).end(); // We couldn't find the specified user
                     }
                 })
                 .catch(this.logAndReportServerError(res));
