@@ -1,5 +1,6 @@
 <template>
-  <div class="about">
-    <h1>This is an about page</h1>
+  <div class="about container">
+    <h1>CompuMegaCorp</h1>
+    <p>The ultimate work simulator&hellip;</p>
   </div>
 </template>
