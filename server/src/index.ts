@@ -6,7 +6,7 @@ import passport from "passport";
 import { Strategy as BearerStrategy } from "passport-http-bearer";
 import { format } from "util";
 import controllers from "./controllers";
-import { IUser } from "./models/user";
+import { IUser, ISession } from "./models/user";
 
 // Setup Express (Static / Body Parser)
 let port = process.env.PORT || 8080;
@@ -29,9 +29,24 @@ MongoClient.connect(databaseUrl, (error: MongoError, client: MongoClient) => {
 
     // Passport authentication
     passport.use(new BearerStrategy((token: string, done: (error: any, user?: any) => void) => {
-        db.collection('session').findOne<IUser>({token: token})
-            .then((user) => {
-                done(null, user);
+        db.collection('session').findOne<ISession>({ token: token })
+            .then((session) => {
+                if (session) {
+                    db.collection('user').findOne<IUser>({ _id: session.userId })
+                        .then((user) => {
+                            if (user) {
+                                done(null, user); // Found user
+                            } else {
+                                done(null, false); // Couldn't find user based on session's user ID
+                            }
+                        })
+                        .catch((error) => {
+                            console.error(error);
+                            done(error);
+                        });
+                } else {
+                    done(null, false); // Couldn't find session for user
+                }
             })
             .catch((error) => {
                 console.error(error);
