@@ -8,17 +8,20 @@
 
       <div class="collapse navbar-collapse" id="navbarControls">
         <ul class="navbar-nav mr-auto">
+          <li class="nav-item" v-if="loggedIn">
+            <router-link to="/jobs" class="nav-link">Jobs</router-link>
+          </li>
           <li class="nav-item">
             <router-link to="/about" class="nav-link">About</router-link>
-          </li>
-          <li class="nav-item" v-if="loggedIn">
-            <router-link to="/dashboard" class="nav-link">Dashboard</router-link>
           </li>
         </ul>
 
         <ul class="navbar-nav">
           <li class="nav-item" v-if="!loggedIn">
             <router-link to="/login" class="nav-link">Login</router-link>
+          </li>
+          <li class="nav-item" v-if="loggedIn">
+            <router-link to="/settings" class="nav-link">Settings</router-link>
           </li>
           <li class="nav-item" v-if="loggedIn" >
             <router-link to="/logout" class="nav-link">Logout</router-link>
