@@ -6,6 +6,7 @@ import Home from '@/views/Home.vue'
 import About from '@/views/About.vue'
 import Login from '@/views/Login.vue'
 import Register from '@/views/Register.vue'
+import Jobs from '@/views/Jobs.vue'
 
 Vue.use(Router)
 
@@ -20,6 +21,11 @@ export default new Router({
       path: '/about',
       name: 'about',
       component: About
+    },
+    {
+      path: '/jobs',
+      name: 'jobs',
+      component: Jobs
     },
     {
       path: '/login',
