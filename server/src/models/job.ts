@@ -4,5 +4,12 @@ export interface IJob {
     _id: ObjectId;
     name: string;
     expired: boolean;
-    users: ObjectId[];
+    posted: Date;
+    allocations: IJobSelection;
+    tasks: ObjectId[];
+}
+
+export interface IJobSelection {
+    userId: ObjectId;
+    taskId: ObjectId;
 }
