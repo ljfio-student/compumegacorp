@@ -15,9 +15,9 @@
             <tbody>
                 <tr v-for="job in jobs" :key="job._id">
                     <td>{{ job.name }}</td>
-                    <td>{{ job.users.length }}</td>
+                    <td>{{ job.allocations != null ? job.allocations.length : 0 }}</td>
                     <td>
-                        <router-link class="btn btn-primary" to="{ path: 'job', params: { id: job._id }}">Join task force</router-link>
+                        <router-link class="btn btn-primary" :to="{ name: 'job', params: { id: job._id }}">Join task force</router-link>
                     </td>
                 </tr>
             </tbody>
