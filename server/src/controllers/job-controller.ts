@@ -129,7 +129,7 @@ export class JobController extends Controller {
                     let index = Math.floor(Math.random() * max);
 
                     if (list.indexOf(ids[index]) == -1) {
-                        list.push(ids[index]);
+                        list.push(ids[index]._id);
                     }
                 }
 
@@ -137,7 +137,8 @@ export class JobController extends Controller {
                 let job = <IJob>{
                     name: "New Job",
                     posted: new Date(),
-                    tasks: list
+                    tasks: list,
+                    expired: false,
                 };
 
                 this.collection.insertOne(job)
