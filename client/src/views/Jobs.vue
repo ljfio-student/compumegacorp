@@ -2,7 +2,7 @@
     <div class="jobs container">
         <h1>Jobs</h1>
 
-        <button type="button" class="btn btn-primary">Go to work!</button>
+        <button type="button" class="btn btn-primary" v-on:click="createJob">Go to work!</button>
 
         <table class="table table-hover">
             <thead>
@@ -17,7 +17,7 @@
                     <td>{{ job.name }}</td>
                     <td>{{ job.users.length }}</td>
                     <td>
-                        <button type="button" class="btn btn-primary">Join workgroup</button>
+                        <router-link class="btn btn-primary" to="{ path: 'job', params: { id: job._id }}">Join task force</router-link>
                     </td>
                 </tr>
             </tbody>
@@ -35,16 +35,26 @@ export default {
         }
     },
     created() {
+        // Get the current list of jobs
         auth.http().get('/job')
             .then(response => {
-                console.log(response);
                 if (response.data) {
                     this.jobs = response.data;
                 }
-            })
+            });
+    },
+    methods: {
+        createJob() {
+            auth.http().post('/job')
+                .then(response => {
+                    if (response.data && response.data.success) {
+                        this.$router.replace('/job/' + response.data.id);
+                    } else {
+                        console.log('could not create job');
+                    }
+                });
+        }
     }
 }
-
-
 </script>
 
