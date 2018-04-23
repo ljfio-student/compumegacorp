@@ -4,6 +4,7 @@ import passport from "passport";
 import { IJob, IJobSelection } from "../models/job";
 import { Controller } from "./controller";
 import { ITask } from "../models/task";
+import { IUser } from "../models/user";
 
 export class JobController extends Controller {
     private collection: Collection;
@@ -64,7 +65,9 @@ export class JobController extends Controller {
     }
 
     private async joinJob(req: express.Request, res: express.Response) {
-        if (!req.user) {
+        let user = req.user as IUser;
+
+        if (user == null) {
             return res.status(401).end();
         }
 
@@ -91,13 +94,18 @@ export class JobController extends Controller {
             return res.status(404).send({ error: "job not found" }).end();
         }
 
+        // Check that the user hasn't already allocated themselves to a job
+        if (jobResult.allocations.filter(c => c.userId.equals(user._id)).length > 0) {
+            return res.status(400).send({ error: "user already allocated to a task"}).end();
+        }
+
         // Check that the task was added to the job
         if (jobResult.tasks.filter(c => c.equals(taskId)).length == 0) {
             return res.status(404).send({ error: "task not found on job" }).end();
         }
 
         let allocation = <IJobSelection>{
-            userId: req.user._id,
+            userId: user._id,
             taskId: taskId,
         };
 
