@@ -2,7 +2,7 @@ import express from "express";
 import passport from "passport";
 import { Db, Collection } from "mongodb";
 import bcrypt from "bcrypt";
-import { IUser, ISimpleUser, ILoginRequest, ISession } from "../models/user";
+import { IUser, ISimpleUser, ILoginRequest, ISession, IRegisterRequest } from "../models/user";
 import { v4 as uuid } from "uuid";
 import { Controller } from "./controller";
 
@@ -24,7 +24,7 @@ export class UserController extends Controller {
 
         // Login routes
         router.post('/user/login', this.loginUser.bind(this));
-
+        router.post('/user/register', this.registerUser.bind(this));
     }
     private loginUser(req: express.Request, res: express.Response) {
         let data = req.body as ILoginRequest;
@@ -60,6 +60,40 @@ export class UserController extends Controller {
                 .catch(this.logAndReportServerError(res));
         } else {
             res.status(400).end(); // Bad request - was not login request
+        }
+    }
+
+    private async registerUser(req: express.Request, res: express.Response) {
+        let data = req.body as IRegisterRequest;
+
+        if (data != null) {
+            let usersWithEmail = await this.collection.count({ email: data.email });
+
+            if (usersWithEmail == 0) {
+                let password = await bcrypt.hash(data.password, 10);
+
+                let user = <IUser>{
+                    name: data.name,
+                    email: data.email,
+                    password: password,
+                };
+
+                this.collection.insertOne(user)
+                    .then(() => {
+                        res.send({
+                            success: true
+                        })
+                        .end();
+                    })
+                    .catch(this.logAndReportServerError(res));
+            } else {
+                // Already registered with the email address supplied
+                res.send({
+                    error: "Already registered with email address"
+                }).end();
+            }
+        } else {
+            res.status(400).end(); // Bad request - was not a register request
         }
     }
 
