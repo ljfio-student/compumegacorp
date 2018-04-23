@@ -26,6 +26,7 @@ export class UserController extends Controller {
         router.post('/user/login', this.loginUser.bind(this));
         router.post('/user/register', this.registerUser.bind(this));
     }
+
     private loginUser(req: express.Request, res: express.Response) {
         let data = req.body as ILoginRequest;
 
@@ -45,7 +46,10 @@ export class UserController extends Controller {
 
                                     this.sessionCollection.insert(session)
                                         .then(() => {
-                                            res.send({ token: token }).end();
+                                            res.send({
+                                                authenticated: true,
+                                                token: token
+                                            }).end();
                                         })
                                         .catch(this.logAndReportServerError(res));
                                 } else {
@@ -80,7 +84,7 @@ export class UserController extends Controller {
 
                 this.collection.insertOne(user)
                     .then(() => {
-                        res.send({
+                        res.status(201).send({
                             success: true
                         })
                         .end();
