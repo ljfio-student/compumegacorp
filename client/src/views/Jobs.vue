@@ -1,10 +1,27 @@
 <template>
     <div class="jobs container">
-        <ul>
-            <li v-for="job in jobs" :key="job._id">
-                {{ job.name }}
-            </li>
-        </ul>
+        <h1>Jobs</h1>
+
+        <button type="button" class="btn btn-primary">Go to work!</button>
+
+        <table class="table table-hover">
+            <thead>
+                <tr>
+                <th scope="col">Name</th>
+                <th scope="col">Players</th>
+                <th scope="col"></th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr v-for="job in jobs" :key="job._id">
+                    <td>{{ job.name }}</td>
+                    <td>{{ job.users.length }}</td>
+                    <td>
+                        <button type="button" class="btn btn-primary">Join workgroup</button>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
     </div>
 </template>
 
