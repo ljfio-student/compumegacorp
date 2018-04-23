@@ -1,23 +1,14 @@
 {
-  "name": "pirate-racing",
+  "name": "compumegacorp",
   "version": "0.1.0",
   "description": "Mini MMORPG",
   "main": "index.js",
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/ljfio/pirate-racing.git"
-  },
-  "bugs": {
-    "url": "https://github.com/ljfio/pirate-racing/issues"
-  },
-  "homepage": "https://github.com/ljfio/pirate-racing#readme",
+  "private": true,
   "scripts": {
     "build": "tsc",
     "start": "node dist",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "author": "",
-  "license": "ISC",
   "devDependencies": {
     "@types/bcrypt": "^1.0.0",
     "@types/cors": "^2.8.3",
