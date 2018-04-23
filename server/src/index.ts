@@ -12,7 +12,7 @@ import { IUser, ISession } from "./models/user";
 // Setup Express (Static / Body Parser)
 let port = process.env.PORT || 8081;
 const databaseUrl: string = "mongodb://127.0.0.1:27017";
-const databaseName: string = "pirateracing";
+const databaseName: string = "compumegacorp";
 
 let app = express();
 let server = http.createServer(app);
