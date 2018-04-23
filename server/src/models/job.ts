@@ -5,7 +5,7 @@ export interface IJob {
     name: string;
     expired: boolean;
     posted: Date;
-    allocations: IJobSelection;
+    allocations: IJobSelection[];
     tasks: ObjectId[];
 }
 

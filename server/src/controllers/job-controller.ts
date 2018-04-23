@@ -69,7 +69,7 @@ export class JobController extends Controller {
         }
 
         // Get the job the user wants to join
-        let id = req.params.id;
+        let id = new ObjectId(req.params.id);
 
         // If we have not been provided with an id then it is a bad request
         if (id == null) {
@@ -77,7 +77,7 @@ export class JobController extends Controller {
         }
 
         // Get the task for the job we want to join
-        let taskId = req.params.taskId;
+        let taskId = new ObjectId(req.params.taskId);
 
         // If we have not been provided with a taskId then it is a bad request
         if (taskId == null) {
@@ -85,30 +85,28 @@ export class JobController extends Controller {
         }
 
         // Check that the job exists in the database
-        let jobCount = await this.collection.findOne<IJob>({ _id: id })
+        let jobResult = await this.collection.findOne<IJob>({ _id: id })
 
-        if (jobCount == null) {
-            return res.status(404).end();
+        if (jobResult == null) {
+            return res.status(404).send({ error: "job not found" }).end();
         }
 
         // Check that the task was added to the job
-        if (jobCount.tasks.indexOf(new ObjectId(taskId)) == -1) {
-            return res.status(404).end();
+        if (jobResult.tasks.filter(c => c.equals(taskId)).length == 0) {
+            return res.status(404).send({ error: "task not found on job" }).end();
         }
 
         let allocation = <IJobSelection>{
             userId: req.user._id,
-            taskId: new ObjectId(taskId),
+            taskId: taskId,
         };
 
         this.collection.updateOne({ _id: id }, { $push: { allocations: allocation } })
             .then(result => {
                 if (result.modifiedCount == 1) {
-                    res.send({
-                        success: true
-                    }).end();
+                    res.send({ success: true }).end();
                 } else {
-                    res.status(404).end();
+                    res.status(404).send({ error: "couldn't add allocation to job" }).end();
                 }
             })
             .catch(this.logAndReportServerError(res));
@@ -139,6 +137,7 @@ export class JobController extends Controller {
                     posted: new Date(),
                     tasks: list,
                     expired: false,
+                    allocations: Array<IJobSelection>()
                 };
 
                 this.collection.insertOne(job)
