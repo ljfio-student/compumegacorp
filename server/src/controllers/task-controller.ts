@@ -1,5 +1,5 @@
 import { Controller } from "./controller";
-import { Db, Collection } from "mongodb";
+import { Db, Collection, ObjectId } from "mongodb";
 import express from "express";
 import passport from "passport";
 import { ITask } from "../models/task";
@@ -44,14 +44,14 @@ export class TaskController extends Controller {
         }
 
         // Get the ID of the task we are looking to locate
-        let id = req.param('id');
+        let id = req.params.id;
 
         if (id == null) {
             res.status(400).end();
         }
 
         // Find one task
-        this.collection.findOne<ITask>({ _id: id })
+        this.collection.findOne<ITask>({ _id: new ObjectId(id) })
             .then(task => {
                 if (task != null) {
                     res.send(task).end();
@@ -104,13 +104,10 @@ export class TaskController extends Controller {
         }
 
         // Perform the update and check that one has been updated
-        this.collection.updateOne({ _id: id}, { $set: {active: false}})
+        this.collection.updateOne({ _id: new ObjectId(id) }, { $set: { active: false } })
             .then(result => {
                 if (result.upsertedCount == 1) {
-                    res.send({
-                        deleted: true
-                    })
-                    .end();
+                    res.send({ deleted: true }).end();
                 } else {
                     res.status(404).end();
                 }

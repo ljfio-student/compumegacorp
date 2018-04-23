@@ -45,14 +45,14 @@ export class JobController extends Controller {
         }
 
         // Get the job the user has requested
-        let id = req.param('id');
+        let id = req.params.id;
 
         // If we have not been provided an id then it is a bad request
         if (id == null) {
             return res.status(400).end();
         }
 
-        this.collection.findOne<IJob>({ _id: id })
+        this.collection.findOne<IJob>({ _id: new ObjectId(id) })
             .then((job) => {
                 if (job != null) {
                     res.send(job).end();
@@ -69,7 +69,7 @@ export class JobController extends Controller {
         }
 
         // Get the job the user wants to join
-        let id = req.param('id');
+        let id = req.params.id;
 
         // If we have not been provided with an id then it is a bad request
         if (id == null) {
@@ -77,7 +77,7 @@ export class JobController extends Controller {
         }
 
         // Get the task for the job we want to join
-        let taskId = req.param('taskId');
+        let taskId = req.params.taskId;
 
         // If we have not been provided with a taskId then it is a bad request
         if (taskId == null) {
@@ -92,13 +92,13 @@ export class JobController extends Controller {
         }
 
         // Check that the task was added to the job
-        if (jobCount.tasks.indexOf(ObjectId.createFromHexString(taskId)) == -1) {
+        if (jobCount.tasks.indexOf(new ObjectId(taskId)) == -1) {
             return res.status(404).end();
         }
 
         let allocation = <IJobSelection>{
             userId: req.user._id,
-            taskId: ObjectId.createFromHexString(taskId),
+            taskId: new ObjectId(taskId),
         };
 
         this.collection.updateOne({ _id: id }, { $push: { allocations: allocation } })
@@ -128,7 +128,7 @@ export class JobController extends Controller {
                 while (list.length < 4) {
                     let index = Math.floor(Math.random() * max);
 
-                    if (list.indexOf(ids[index]) == -1) {
+                    if (list.indexOf(ids[index]._id) == -1) {
                         list.push(ids[index]._id);
                     }
                 }
