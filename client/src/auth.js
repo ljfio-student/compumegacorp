@@ -1,51 +1,60 @@
+import axios from "axios";
+
 /* globals localStorage */
 
 export default {
     login(email, pass, cb) {
         cb = arguments[arguments.length - 1]
-        if (localStorage.token) {
+
+        if (this.getToken()) {
             if (cb) cb(true)
             this.onChange(true)
             return
         }
-        pretendRequest(email, pass, (res) => {
-            if (res.authenticated) {
-                localStorage.token = res.token
+
+        this.http().post('/user/login', {
+            email: email,
+            password: pass,
+        })
+        .then(response => {
+            if (response.data.authenticated) {
+                localStorage.setItem('token', response.data.token);
                 if (cb) cb(true)
                 this.onChange(true)
-            } else {
-                if (cb) cb(false)
-                this.onChange(false)
             }
         })
+        .catch(error => {
+            if (cb) cb(false)
+            this.onChange(false)
+        });
     },
 
     getToken() {
-        return localStorage.token
+        return localStorage.getItem('token');
     },
 
     logout(cb) {
-        delete localStorage.token
+        localStorage.removeItem('token');
         if (cb) cb()
         this.onChange(false)
     },
 
     loggedIn() {
-        return !!localStorage.token
+        return !!this.getToken();
     },
 
-    onChange() { }
-}
+    onChange() { },
 
-function pretendRequest(email, pass, cb) {
-    setTimeout(() => {
-        if (email === 'joe@example.com' && pass === 'password1') {
-            cb({
-                authenticated: true,
-                token: Math.random().toString(36).substring(7)
-            })
-        } else {
-            cb({ authenticated: false })
-        }
-    }, 0)
+    getAuthHeaders() {
+        return {
+            'Authorization': 'Bearer ' + this.getToken(),
+        };
+    },
+
+    http() {
+        return axios.create({
+            baseURL: 'http://localhost:8081/api',
+            headers: this.getAuthHeaders(),
+        });
+    }
 }
