@@ -22,7 +22,7 @@ export class TaskController extends Controller {
         router.get('/task', passport.authenticate('bearer', { session: false }), this.getTasks.bind(this));
         router.get('/task/:id', passport.authenticate('bearer', { session: false }), this.getTask.bind(this));
         router.post('/task', passport.authenticate('bearer', { session: false }), this.addTask.bind(this));
-        router.delete('/task', passport.authenticate('bearer', { session: false }), this.removeTask.bind(this));
+        router.delete('/task/:id', passport.authenticate('bearer', { session: false }), this.removeTask.bind(this));
     }
 
     private getTasks(req: express.Request, res: express.Response) {
