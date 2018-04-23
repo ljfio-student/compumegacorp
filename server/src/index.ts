@@ -1,6 +1,7 @@
 import bodyParser from "body-parser";
 import express from "express";
 import http from "http";
+import cors from "cors";
 import { Db, MongoClient, MongoError } from "mongodb";
 import passport from "passport";
 import { Strategy as BearerStrategy } from "passport-http-bearer";
@@ -9,13 +10,14 @@ import controllers from "./controllers";
 import { IUser, ISession } from "./models/user";
 
 // Setup Express (Static / Body Parser)
-let port = process.env.PORT || 8080;
+let port = process.env.PORT || 8081;
 const databaseUrl: string = "mongodb://127.0.0.1:27017";
 const databaseName: string = "pirateracing";
 
 let app = express();
 let server = http.createServer(app);
 
+app.use(cors());
 app.use(express.static("public"));
 app.use(bodyParser.json());
 
