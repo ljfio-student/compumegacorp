@@ -5,23 +5,28 @@
             <legend>Register</legend>
 
             <div class="form-group">
+                <label for="inputName">Name</label>
+                <input v-model="name" type="text" class="form-control" id="inputName" placeholder="Joe Bloggs">
+            </div>
+
+            <div class="form-group">
                 <label for="inputEmail">Email address</label>
-                <input v-model="email" type="email" class="form-control" id="inputEmail" aria-describedby="emailHelp" placeholder="Enter email">
+                <input v-model="email" type="email" class="form-control" id="inputEmail" placeholder="joe@example.com">
             </div>
 
             <div class="form-group">
                 <label for="inputConfirmEmail">Confirm email</label>
-                <input v-model="confirmEmail" type="email" class="form-control" id="inputConfirmEmail" aria-describedby="emailHelp" placeholder="Enter email">
+                <input v-model="confirmEmail" type="email" class="form-control" id="inputConfirmEmail" placeholder="joe@example.com">
             </div>
 
             <div class="form-group">
                 <label for="inputPassword">Password</label>
-                <input v-model="pass" type="password" class="form-control" id="inputPassword" placeholder="Password">
+                <input v-model="pass" type="password" class="form-control" id="inputPassword" placeholder="Pa$$w0rd">
             </div>
 
             <div class="form-group">
                 <label for="inputConfirmPassword">Confirm password</label>
-                <input v-model="confirmPassword" type="password" class="form-control" id="inputConfirmPassword" placeholder="Password">
+                <input v-model="confirmPassword" type="password" class="form-control" id="inputConfirmPassword" placeholder="Pa$$w0rd">
             </div>
         </fieldset>
 
@@ -31,20 +36,19 @@
 </template>
 
 <script>
- export default {
-    data () {
-      return {
-        email: '',
-        confirmEmail: '',
-        pass: '',
-        confirmPassword: '',
-        error: false
-      }
-    },
-    methods: {
-        register() {
-
-        }
-    }
- }
+export default {
+  data() {
+    return {
+      name: "",
+      email: "",
+      confirmEmail: "",
+      pass: "",
+      confirmPassword: "",
+      error: false
+    };
+  },
+  methods: {
+    register() {}
+  }
+};
 </script>
