@@ -13,3 +13,7 @@ export interface IJobSelection {
     userId: ObjectId;
     taskId: ObjectId;
 }
+
+export interface IJobProcess {
+    id: ObjectId;
+}

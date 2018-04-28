@@ -1,13 +1,17 @@
 import express from "express";
 import { Collection, Db, ObjectId } from "mongodb";
 import passport from "passport";
-import { IJob, IJobSelection } from "../models/job";
+import { IJob, IJobSelection, IJobProcess } from "../models/job";
 import { Controller } from "./controller";
 import { ITask } from "../models/task";
 import { IUser } from "../models/user";
+import async, { AsyncQueue } from "async";
+
+const gameLength = 3000000;
 
 export class JobController extends Controller {
     private collection: Collection;
+    private queue: AsyncQueue<IJobProcess>;
 
     constructor(
         router: express.Router,
@@ -18,6 +22,9 @@ export class JobController extends Controller {
         // Setup database collection
         this.collection = db.collection('job');
 
+        // Setup the quue
+        this.queue = async.queue(this.handleJobQueue.bind(this), 1);
+
         // Setup the express routes
         router.get('/job', passport.authenticate('bearer', { session: false }), this.getJobs.bind(this));
         router.get('/job/:id', passport.authenticate('bearer', { session: false }), this.getJob.bind(this));
@@ -25,6 +32,9 @@ export class JobController extends Controller {
         router.post('/job', passport.authenticate('bearer', { session: false }), this.createJob.bind(this));
 
         router.post('/job/:id/task/:taskId', passport.authenticate('bearer', { session: false }), this.joinJob.bind(this));
+
+        // Load the stagnant jobs into the queue
+        this.loadJobsIntoQueue();
     }
 
     private getJobs(req: express.Request, res: express.Response) {
@@ -96,7 +106,7 @@ export class JobController extends Controller {
 
         // Check that the user hasn't already allocated themselves to a job
         if (jobResult.allocations.filter(c => c.userId.equals(user._id)).length > 0) {
-            return res.status(400).send({ error: "user already allocated to a task"}).end();
+            return res.status(400).send({ error: "user already allocated to a task" }).end();
         }
 
         // Check that the task was added to the job
@@ -118,6 +128,56 @@ export class JobController extends Controller {
                 }
             })
             .catch(this.logAndReportServerError(res));
+    }
+
+    private loadJobsIntoQueue() {
+        this.collection.find({ expired: false }, { fields: { _id: 1 } }).toArray()
+            .then(result => {
+                result.forEach(item => {
+                    this.queue.push({ id: item._id });
+                });
+            })
+            .catch(error => {
+                console.error(error);
+            });
+    }
+
+    private handleJobQueue(item: IJobProcess, callback: () => void) {
+        this.collection.findOne<IJob>({ _id: item.id })
+            .then((job) => {
+                // Check that we have found a job
+                if (job == null) {
+                    callback();
+                    return;
+                }
+
+                // Get the current time and get the difference from when the job was posted
+                let now = new Date();
+                let difference = job.posted.getMilliseconds() - now.getMilliseconds();
+
+                // Check that the game length has passed
+                if (difference >= gameLength && job.allocations.length > 1) {
+                    this.collection.updateOne({ _id: job._id }, { $set: { expired: true } })
+                        .then(() => {
+                            callback();
+                        })
+                        .catch(error => {
+                            console.error(error);
+                            callback();
+                        })
+                } else {
+                    // Add it back into the queue
+                    setTimeout(() => {
+                        this.queue.push(item);
+                    }, 10000);
+
+                    callback();
+                }
+            })
+            .catch(error => {
+                console.error(error);
+                callback();
+            });
     }
 
     private createJob(req: express.Request, res: express.Response) {
@@ -150,10 +210,14 @@ export class JobController extends Controller {
 
                 this.collection.insertOne(job)
                     .then(result => {
-                        res.send({
-                            id: result.insertedId,
-                            success: result.insertedCount == 1
-                        }).end();
+                        if (result.insertedCount == 1) {
+                            this.queue.push({ id: result.insertedId });
+
+                            res.send({
+                                id: result.insertedId,
+                                success: true
+                            }).end();
+                        }
                     })
                     .catch(this.logAndReportServerError(res));
             })
