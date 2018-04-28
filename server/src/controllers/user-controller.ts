@@ -48,7 +48,8 @@ export class UserController extends Controller {
                                         .then(() => {
                                             res.send({
                                                 authenticated: true,
-                                                token: token
+                                                token: token,
+                                                userId: user._id,
                                             }).end();
                                         })
                                         .catch(this.logAndReportServerError(res));

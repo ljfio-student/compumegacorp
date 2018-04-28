@@ -2,6 +2,9 @@ import axios from "axios";
 
 /* globals localStorage */
 
+const tokenKeyName = 'token'
+const userIdKeyName = 'userId';
+
 export default {
     login(email, pass, cb) {
         cb = arguments[arguments.length - 1]
@@ -18,7 +21,9 @@ export default {
         })
         .then(response => {
             if (response.data.authenticated) {
-                localStorage.setItem('token', response.data.token);
+                localStorage.setItem(tokenKeyName, response.data.token);
+                localStorage.setItem(userIdKeyName, response.data.userId);
+
                 if (cb) cb(true)
                 this.onChange(true)
             }
@@ -29,12 +34,18 @@ export default {
         });
     },
 
+    getUserId() {
+        return localStorage.getItem(userIdKeyName);
+    },
+
     getToken() {
-        return localStorage.getItem('token');
+        return localStorage.getItem(tokenKeyName);
     },
 
     logout(cb) {
-        localStorage.removeItem('token');
+        localStorage.removeItem(tokenKeyName);
+        localStorage.removeItem(userIdKeyName);
+
         if (cb) cb()
         this.onChange(false)
     },
