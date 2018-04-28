@@ -2,7 +2,7 @@
     <div class="job container">
         <h1>{{ name }}</h1>
 
-      <form @submit.prevent="join">
+      <form @submit.prevent="join" v-if="!isUserPresent">
         <fieldset class="form-group">
           <legend>Select a Task</legend>
           <div class="form-check"  v-for="task in tasks" v-bind:key="task._id">
@@ -26,32 +26,42 @@ export default {
     return {
       selected: "",
       name: "",
-      tasks: []
+      tasks: [],
+      users: [],
     };
   },
+  computed: {
+    isUserPresent() {
+      return this.users.findIndex(v => v == auth.getUserId()) > -1
+    }
+  },
   created() {
-    auth
-      .http()
-      .get("/job/" + this.$route.params.id)
-      .then(jobResult => {
-        this.name = jobResult.data.name;
-
-        jobResult.data.tasks.forEach(element => {
-          auth
-            .http()
-            .get("/task/" + element)
-            .then(taskResult => {
-              this.tasks.push(taskResult.data);
-            });
-        });
-      });
+   this.loadData();
   },
   methods: {
     join() {
       auth.http().post('/job/' + this.$route.params.id + '/task/' + this.selected)
         .then(result => {
+          this.loadData();
+        });
+    },
+    loadData() {
+       auth
+        .http()
+        .get("/job/" + this.$route.params.id)
+        .then(jobResult => {
+          this.name = jobResult.data.name;
+          this.users = jobResult.data.allocations.map(a => a.userId);
 
-        })
+          jobResult.data.tasks.forEach(element => {
+            auth
+              .http()
+              .get("/task/" + element)
+              .then(taskResult => {
+                this.tasks.push(taskResult.data);
+              });
+          });
+        });
     }
   }
 };
