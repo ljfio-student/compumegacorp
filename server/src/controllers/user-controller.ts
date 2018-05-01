@@ -1,6 +1,6 @@
 import express from "express";
 import passport from "passport";
-import { Db, Collection } from "mongodb";
+import { Db, Collection, ObjectId } from "mongodb";
 import bcrypt from "bcrypt";
 import { IUser, ISimpleUser, ILoginRequest, ISession, IRegisterRequest } from "../models/user";
 import { v4 as uuid } from "uuid";
@@ -109,7 +109,7 @@ export class UserController extends Controller {
         }
 
         // Get the user parameter
-        let id = req.param('id');
+        let id = new ObjectId(req.params.id);
 
         if (id == null) {
             let user = req.user as ISimpleUser;
