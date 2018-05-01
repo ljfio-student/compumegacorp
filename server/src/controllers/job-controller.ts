@@ -83,7 +83,7 @@ export class JobController extends Controller {
         }
 
         // Get the job the user wants to join
-        let id = new Object(req.params.id);
+        let id = new ObjectId(req.params.id);
 
         // If we have not been provided with a valid id then it is a bad request
         if (id == null) {
@@ -182,7 +182,7 @@ export class JobController extends Controller {
                 if (result.modifiedCount == 1) {
                     res.send({ success: true }).end();
                 } else {
-                    res.status(404).send({ error: "couldn't add allocation to job" }).end();
+                    res.status(500).send({ error: "couldn't add allocation to job" }).end();
                 }
             })
             .catch(this.logAndReportServerError(res));
