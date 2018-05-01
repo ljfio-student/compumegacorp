@@ -1,7 +1,7 @@
 import express from "express";
 import { Collection, Db, ObjectId } from "mongodb";
 import passport from "passport";
-import { IJob, IJobSelection, IJobProcess } from "../models/job";
+import { IJob, ITaskSelection, IJobProcess } from "../models/job";
 import { Controller } from "./controller";
 import { ITask } from "../models/task";
 import { IUser } from "../models/user";
@@ -114,7 +114,7 @@ export class JobController extends Controller {
             return res.status(404).send({ error: "task not found on job" }).end();
         }
 
-        let allocation = <IJobSelection>{
+        let allocation = <ITaskSelection>{
             userId: user._id,
             taskId: taskId,
         };
@@ -205,7 +205,7 @@ export class JobController extends Controller {
                     posted: new Date(),
                     tasks: list,
                     expired: false,
-                    allocations: Array<IJobSelection>()
+                    allocations: Array<ITaskSelection>()
                 };
 
                 this.collection.insertOne(job)

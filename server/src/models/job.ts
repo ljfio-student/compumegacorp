@@ -5,11 +5,11 @@ export interface IJob {
     name: string;
     expired: boolean;
     posted: Date;
-    allocations: IJobSelection[];
+    allocations: ITaskSelection[];
     tasks: ObjectId[];
 }
 
-export interface IJobSelection {
+export interface ITaskSelection {
     userId: ObjectId;
     taskId: ObjectId;
 }
