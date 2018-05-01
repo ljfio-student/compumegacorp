@@ -18,7 +18,7 @@
         <button class="btn btn-primary" type="submit">Join</button>
       </form>
 
-      <form @submit.prevent="blame" v-if="isUserPresent">
+      <form @submit.prevent="blame" v-if="isUserPresent && !hasUserBlamed">
         <fieldset class="form-group">
           <legend>Select a User to Blame</legend>
           <div class="form-check" v-for="member in members" :key="member._id">
@@ -51,6 +51,9 @@ export default {
   computed: {
     isUserPresent() {
       return this.members.findIndex(v => v._id == auth.getUserId()) > -1;
+    },
+    hasUserBlamed() {
+      return this.blamed.findIndex(v => v.userId == auth.getUserId()) > -1;
     }
   },
   created() {
@@ -75,7 +78,11 @@ export default {
         .get("/job/" + this.$route.params.id)
         .then(jobResult => {
           this.name = jobResult.data.name;
+          this.tasks = [];
+          this.members = [];
+          this.blamed = jobResult.data.blamed;
 
+          // Obtain information about each task linked to the job
           jobResult.data.tasks.forEach(element => {
             auth.http()
               .get("/task/" + element)
@@ -84,6 +91,7 @@ export default {
               });
           });
 
+          // Obtain information about each user linked to a job
           jobResult.data.allocations.map(a => a.userId).forEach(element => {
             auth.http()
               .get("/user/" + element)
