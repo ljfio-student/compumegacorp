@@ -7,8 +7,10 @@
           <fieldset class="form-group">
             <legend>Select a Task</legend>
             <div class="form-check" v-for="task in tasks" :key="task._id">
-              <input type="radio" class="form-check-input" v-model="selectedTaskId" :value="task._id" />
-              <label class="form-check-label">{{ task.name }}</label>
+              <label class="form-check-label">
+                <input type="radio" class="form-check-input" v-model="selectedTaskId" :value="task._id" />
+                {{ task.name }}
+              </label>
             </div>
           </fieldset>
         </fieldset>
@@ -20,10 +22,14 @@
         <fieldset class="form-group">
           <legend>Select a User to Blame</legend>
           <div class="form-check" v-for="member in members" :key="member._id">
-            <input type="radio" class="form-check-input" v-model="selectedMemberId" :value="member._id" />
-            <label class="form-check-label">{{ member.name }}</label>
+            <label class="form-check-label">
+              <input type="radio" class="form-check-input" v-model="selectedMemberId" :value="member._id" />
+              {{ member.name }}
+            </label>
           </div>
         </fieldset>
+
+        <button class="btn btn-primary" type="submit">Blame</button>
       </form>
     </div>
 </template>
@@ -58,7 +64,7 @@ export default {
         });
     },
     blame() {
-      auth.http().post('/job/' + this.$route.params.id + '/blame' + this.selectedMemberId)
+      auth.http().post('/job/' + this.$route.params.id + '/blame/' + this.selectedMemberId)
         .then(result => {
           this.loadData();
         });
