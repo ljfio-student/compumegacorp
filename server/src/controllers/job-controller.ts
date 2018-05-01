@@ -263,7 +263,8 @@ export class JobController extends Controller {
                     posted: new Date(),
                     tasks: list,
                     expired: false,
-                    allocations: Array<ITaskSelection>()
+                    allocations: Array<ITaskSelection>(),
+                    blamed: Array<IBlameSelection>(),
                 };
 
                 this.collection.insertOne(job)
