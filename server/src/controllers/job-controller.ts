@@ -35,7 +35,7 @@ export class JobController extends Controller {
         router.post('/job/:id/blame/:userId', passport.authenticate('bearer', { session: false }), this.blameUser.bind(this));
 
         // Load the stagnant jobs into the queue
-        this.loadJobsIntoQueue();
+        this.loadJobsIntoQueue.call(this);
     }
 
     private getJobs(req: express.Request, res: express.Response) {
@@ -191,9 +191,7 @@ export class JobController extends Controller {
     private loadJobsIntoQueue() {
         this.collection.find({ expired: false }, { fields: { _id: 1 } }).toArray()
             .then(result => {
-                result.forEach(item => {
-                    this.queue.push({ id: item._id });
-                });
+                this.queue.push(result.map(i => { return {id: i._id}; }));
             })
             .catch(error => {
                 console.error(error);
@@ -211,10 +209,10 @@ export class JobController extends Controller {
 
                 // Get the current time and get the difference from when the job was posted
                 let now = new Date();
-                let difference = job.posted.getMilliseconds() - now.getMilliseconds();
+                let difference = Math.abs(job.posted.getTime() - now.getTime());
 
                 // Check that the game length has passed
-                if (difference >= gameLength && job.allocations.length > 1) {
+                if (difference >= gameLength && job.allocations.length > 1 && job.blamed.length == job.allocations.length) {
                     this.collection.updateOne({ _id: job._id }, { $set: { expired: true } })
                         .then(() => {
                             callback();
@@ -222,7 +220,7 @@ export class JobController extends Controller {
                         .catch(error => {
                             console.error(error);
                             callback();
-                        })
+                        });
                 } else {
                     // Add it back into the queue
                     setTimeout(() => {
