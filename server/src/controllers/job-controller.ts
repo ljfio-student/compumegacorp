@@ -1,7 +1,7 @@
 import express from "express";
 import { Collection, Db, ObjectId } from "mongodb";
 import passport from "passport";
-import { IJob, ITaskSelection, IJobProcess } from "../models/job";
+import { IJob, ITaskSelection, IJobProcess, IBlameSelection } from "../models/job";
 import { Controller } from "./controller";
 import { ITask } from "../models/task";
 import { IUser } from "../models/user";
@@ -32,6 +32,7 @@ export class JobController extends Controller {
         router.post('/job', passport.authenticate('bearer', { session: false }), this.createJob.bind(this));
 
         router.post('/job/:id/task/:taskId', passport.authenticate('bearer', { session: false }), this.joinJob.bind(this));
+        router.post('/job/:id/blame/:userId', passport.authenticate('bearer', { session: false }), this.blameUser.bind(this));
 
         // Load the stagnant jobs into the queue
         this.loadJobsIntoQueue();
@@ -69,6 +70,63 @@ export class JobController extends Controller {
                     res.send(job).end();
                 } else {
                     res.status(404).end(); // We couldn't find the requested job
+                }
+            })
+            .catch(this.logAndReportServerError(res));
+    }
+
+    private async blameUser(req: express.Request, res: express.Response) {
+        let user = req.user as IUser;
+
+        if (user == null) {
+            return res.status(401).end();
+        }
+
+        // Get the job the user wants to join
+        let id = new Object(req.params.id);
+
+        // If we have not been provided with a valid id then it is a bad request
+        if (id == null) {
+            return res.status(400).end();
+        }
+
+        // Get the user to blame for the task failing
+        let userId = new ObjectId(req.params.userId);
+
+        // If we have not been provided with a valid userId then it is a bad request
+        if (userId == null) {
+            return res.status(400).end();
+        }
+
+        // Check that the job exists in the database
+        let jobResult = await this.collection.findOne<IJob>({ _id: id });
+
+        if (jobResult == null) {
+            return res.status(404).send({ error: "job not found" }).end();
+        }
+
+        // Check if he current user has already blamed someone
+        if (jobResult.blamed.filter(c => c.userId == user._id).length > 0) {
+            return res.status(400).send({ error: "user has already blamed another user " }).end();
+        }
+
+        // Check if the user to blame is in the allocations list
+        if (jobResult.allocations.filter(c => c.userId == userId).length > 0) {
+            return res.status(404).send({ error: "user cannot be blamed as they are not part of the task force" }).end();
+        }
+
+        // Add the blame to the job
+        let blame = <IBlameSelection>{
+            victimId: userId,
+            userId: user._id,
+        };
+
+        this.collection.updateOne({ _id: id }, { $push: { blamed: blame } })
+            .then(result => {
+                if (result.modifiedCount == 1) {
+                    res.send({ success: true }).end();
+                } else {
+                    res.status(500).send({ error: "couldn't add blame to job" }).end();
                 }
             })
             .catch(this.logAndReportServerError(res));

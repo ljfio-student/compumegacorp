@@ -7,6 +7,12 @@ export interface IJob {
     posted: Date;
     allocations: ITaskSelection[];
     tasks: ObjectId[];
+    blamed: IBlameSelection[];
+}
+
+export interface IBlameSelection {
+    victimId: ObjectId;
+    userId: ObjectId;
 }
 
 export interface ITaskSelection {
