@@ -246,17 +246,17 @@ export class JobController extends Controller {
                     if (intersection.length > 0) {
                         // Unfortunately the boss has discovered that the users on the task were indeed incompetent
                         usersOnTask.forEach(v => {
-                            this.db.collection('user').updateOne({_id : v}, {$inc: {score: -10}});
+                            this.db.collection('user').updateOne({_id : v}, {$inc: {score: -10, blamed: 1}});
                         });
                     } else {
                         // The users on the task have got away with it and the most blamed are in trouble
                         mostBlamed.forEach(v => {
-                            this.db.collection('user').updateOne({_id : v}, {$inc: {score: -10}});
+                            this.db.collection('user').updateOne({_id : v}, {$inc: {score: -10, blamed: 1}});
                         });
 
                         // The users on the task have their score boosted
                         usersOnTask.forEach(v => {
-                            this.db.collection('user').updateOne({_id : v}, {$inc: {score: 10}});
+                            this.db.collection('user').updateOne({_id : v}, {$inc: {score: 10, escaped: 1}});
                         });
                     }
 
