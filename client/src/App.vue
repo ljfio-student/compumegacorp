@@ -55,6 +55,10 @@ body {
 </style>
 
 <script>
+import 'jquery';
+import 'popper.js';
+import 'bootstrap';
+
 import auth from '@/auth'
 
 export default {
