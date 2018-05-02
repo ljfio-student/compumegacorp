@@ -3,14 +3,13 @@
     <h1>CompuMegaCorp</h1>
     <p>The ultimate work simulator&hellip;</p>
     <p>
-      Choose tasks to work on.
-      One of them goes wrong.
-      You can blame other people or take the hit yourself.
-
-      You lose merit if you are the person taking the blame.
-      If you take it and own up to it, you gain honesty but lose merit.
-
-      If you’re found out to have been responsible and haven’t taken the blame, the merit goes down further.
+      The ultimate work simulator. Your mission as poor soul number 10001 in CompuMegaCorp's employee database, is to work work work.
+      Your role is to join task forces to ensure the completion of jobs are done so promptly!
+      However, there is a chance that one of the job's tasks fail to complete, leaving a member of the team having to take the blame.
+      <br/><br />
+      The choice is yours, on whether to take the blame yourself or to point the finger at one of your peers.
+      Based on how well you corroborate your stories, the CEO will take note of the incompetent and demote them down the career ladder.
+      If you're able to blag your way out of the task failing, the CEO will promote your efforts in keeping the team afloat.
     </p>
 
     <table class="table table-hover">
