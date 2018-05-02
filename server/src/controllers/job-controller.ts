@@ -213,6 +213,54 @@ export class JobController extends Controller {
 
                 // Check that the game length has passed
                 if (difference >= gameLength && job.allocations.length > 1 && job.blamed.length == job.allocations.length) {
+                    // Select a random task to go wrong
+                    let randomTask = job.tasks[Math.random() * job.tasks.length];
+
+                    // Obtain a list of the users working on the task
+                    let usersOnTask = job.allocations.filter(t => t.taskId == randomTask).map(t => t.userId);
+
+                    // TODO: Update to use some cool logic
+                    let blamedCount = job.blamed
+                        .map(b => b.victimId)
+                        .reduce((p, c) => {
+                            p.set(c, p.has(c) ? (p.get(c)! + 1) : 1);
+
+                            return p;
+                        }, new Map<ObjectId, number>());
+
+                    // Obtain the most blamed individuals
+                    let maximumBlames = 0;
+                    let mostBlamed = Array<ObjectId>();
+
+                    blamedCount.forEach((v, k) => {
+                        if (v > maximumBlames) {
+                            mostBlamed = [k];
+                        } else if (v == maximumBlames) {
+                            mostBlamed.push(k);
+                        }
+                    });
+
+                    // Check to see if any of the most blamed were working on the task
+                    let intersection = mostBlamed.filter(b => usersOnTask.indexOf(b) > -1);
+
+                    if (intersection.length > 0) {
+                        // Unfortunately the boss has discovered that the users on the task were indeed incompetent
+                        usersOnTask.forEach(v => {
+                            this.db.collection('user').updateOne({_id : v}, {$inc: {score: -10}});
+                        });
+                    } else {
+                        // The users on the task have got away with it and the most blamed are in trouble
+                        mostBlamed.forEach(v => {
+                            this.db.collection('user').updateOne({_id : v}, {$inc: {score: -10}});
+                        });
+
+                        // The users on the task have their score boosted
+                        usersOnTask.forEach(v => {
+                            this.db.collection('user').updateOne({_id : v}, {$inc: {score: 10}});
+                        });
+                    }
+
+                    // Update the game to mark it as expired
                     this.collection.updateOne({ _id: job._id }, { $set: { expired: true } })
                         .then(() => {
                             callback();
