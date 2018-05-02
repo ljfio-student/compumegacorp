@@ -96,7 +96,7 @@ export default {
           window.clearInterval(this.timer);
           this.timer = countdown(new Date(jobResult.data.posted), (ts) => {
             this.remaining = ts.toString();
-          }, countdown.HOURS | countdown.MINUTES | countdown.SECONDS);
+          }, countdown.HOURS | countdown.MINUTES);
 
           // Obtain information about each task linked to the job
           jobResult.data.tasks.forEach(element => {
