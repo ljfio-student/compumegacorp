@@ -85,3 +85,19 @@ To run the development web server which hosts a web page accessible by a web bro
 ```bash
 npm run serve
 ```
+
+### Database
+
+To initialise the application tasks must be added to the MongoDB database.
+The selected databasename for the project was `compumegacorp`.
+To switch database in the `mongo` CLI tool use the following command:
+
+```javascript
+use compumegacorp
+```
+
+To add in a task to the database the following query must be used setting `name` to the name of the task and `active` to `true`.
+
+```javascript
+db.task.insertOne({ name: "Second task", active: true })
+```
