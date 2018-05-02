@@ -13,13 +13,10 @@
                 </tr>
             </thead>
             <tbody>
-                <tr v-for="job in jobs" :key="job._id">
-                    <td>{{ job.name }}</td>
-                    <td>{{ job.allocations != null ? job.allocations.length : 0 }}</td>
-                    <td>
-                        <router-link class="btn btn-primary" :to="{ name: 'job', params: { id: job._id }}">Join task force</router-link>
-                    </td>
-                </tr>
+                <job-list-item v-for="(job, index) in jobs"
+                    v-bind:job="job"
+                    v-bind:index="index"
+                    v-bind:key="job._id" />
             </tbody>
         </table>
     </div>
@@ -27,6 +24,7 @@
 
 <script>
 import auth from '@/auth';
+import JobListItem from "@/components/JobListItem";
 
 export default {
     data() {
@@ -54,6 +52,9 @@ export default {
                     }
                 });
         }
+    },
+    components: {
+        JobListItem
     }
 }
 </script>
