@@ -16,12 +16,12 @@
                     <form @submit.prevent="sendMessage">
                         <div class="form-group">
                             <label for="message-text" class="col-form-label">Message:</label>
-                            <input type="text" class="form-control" id="message-text" v-model="message" autocomplete="off" />
+                            <input type="text" class="form-control" id="message-text" v-model="message" autocomplete="off" :disabled="!isConnected" />
                         </div>
                     </form>
                 </div>
                 <div class="modal-footer">
-                    <span class="form-control-static pull-left">{{ isConnected ? "Connected" : "Disconnected"}}</span>
+                    <span class="form-control-static pull-left">{{ connectionStatus }}</span>
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
                     <button @click="sendMessage()" type="button" class="btn btn-primary">Send</button>
                 </div>
@@ -42,6 +42,9 @@ export default {
   computed: {
       lastChat() {
           return this.chat.slice(-10);
+      },
+      connectionStatus() {
+          return this.isConnected ? "Connected" : "Disconnected";
       }
   },
   sockets: {
@@ -59,8 +62,10 @@ export default {
   methods: {
     sendMessage() {
       // Send the "pingServer" event to the server.
-      this.$socket.emit("message", this.message);
-      this.message = "";
+      if (this.isConnected) {
+        this.$socket.emit("message", this.message);
+        this.message = "";
+      }
     }
   }
 };
