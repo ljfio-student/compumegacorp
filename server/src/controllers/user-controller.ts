@@ -114,11 +114,11 @@ export class UserController extends Controller {
         let id = new ObjectId(req.params.id);
 
         if (id == null) {
-            let user = req.user as ISimpleUser;
+            let user = req.user;
             res.send(user).end();
         } else {
-            this.collection.findOne({_id: id})
-                .then((user: ISimpleUser) => {
+            this.collection.findOne<ISimpleUser>({_id: id}, { fields: {_id: 1, name: 1} })
+                .then((user) => {
                     if (user) {
                         res.send(user).end();
                     } else {
