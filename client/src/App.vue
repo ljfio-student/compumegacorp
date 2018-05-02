@@ -29,9 +29,6 @@
           <li class="nav-item">
             <a href="#" class="nav-link"  data-toggle="modal" data-target="#chatModel">Chat</a>
           </li>
-          <li class="nav-item" >
-            <router-link to="/settings" class="nav-link" data-toggle="collapse" data-target="#navbarControls">Settings</router-link>
-          </li>
           <li class="nav-item">
             <router-link to="/logout" class="nav-link" data-toggle="collapse" data-target="#navbarControls">Logout</router-link>
           </li>
