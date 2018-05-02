@@ -5,9 +5,9 @@
       <div class="col-sm">
         <div class="card">
           <div class="card-body">
-            <h5 class="card-title">{{score}}</h5>
-            <h6 class="card-subtitle mb-2 text-muted">Current Score</h6>
-            <p class="card-text">This is your current leadership score within the company.</p>
+            <h5 class="card-title">{{role}} <small>({{score}})</small></h5>
+            <h6 class="card-subtitle mb-2 text-muted">Current Role</h6>
+            <p class="card-text">This is your current role within the company.</p>
           </div>
         </div>
       </div>
@@ -45,6 +45,25 @@ export default {
       blamed: 0,
       escaped: 0,
     };
+  },
+  computed: {
+    role() {
+      if (this.score < 200) {
+        return "New Start";
+      } else if (this.score < 300) {
+        return "Supervisor"
+      } else if (this.score < 400) {
+        return "Assistant Manager";
+      } else if (this.score < 500) {
+        return "Manager";
+      } else if (this.score < 600) {
+        return "Vice President";
+      } else if (this.score < 700) {
+        return "Senior Vice President";
+      } else {
+        return "CEO";
+      }
+    }
   },
   created() {
     auth.http().get('/user')
