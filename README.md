@@ -14,6 +14,7 @@ If you're able to blag your way out of the task failing, the CEO will promote yo
 
 ## Functionality
 
+Outlined below is a list of the functionality that has been implemented.
 
 ### Implemented
 
@@ -25,6 +26,7 @@ If you're able to blag your way out of the task failing, the CEO will promote yo
 - View Job
 - Join a Task Force
 - Blame a Team Member
+- Realtime Chat
 
 ## Additions
 
