@@ -2,6 +2,8 @@
     <div class="job container">
       <h1>{{ name }}</h1>
 
+      <p>Started {{remaining}} ago</p>
+
       <form @submit.prevent="join" v-if="!isUserPresent">
         <fieldset>
           <fieldset class="form-group">
@@ -36,6 +38,7 @@
 
 <script>
 import auth from "@/auth";
+import countdown from "countdown";
 
 export default {
   data() {
@@ -46,6 +49,8 @@ export default {
       tasks: [],
       members: [],
       blamed: [],
+      timer: null,
+      remaining: "",
     };
   },
   computed: {
@@ -55,6 +60,9 @@ export default {
     hasUserBlamed() {
       return this.blamed.findIndex(v => v.userId == auth.getUserId()) > -1;
     }
+  },
+  destroyed() {
+    window.clearInterval(this.timer);
   },
   created() {
    this.loadData();
@@ -81,6 +89,12 @@ export default {
           this.tasks = [];
           this.members = [];
           this.blamed = jobResult.data.blamed;
+
+          // Set ticking timer
+          window.clearInterval(this.timer);
+          this.timer = countdown(new Date(jobResult.data.posted), (ts) => {
+            this.remaining = ts.toString();
+          }, countdown.HOURS | countdown.MINUTES | countdown.SECONDS);
 
           // Obtain information about each task linked to the job
           jobResult.data.tasks.forEach(element => {
