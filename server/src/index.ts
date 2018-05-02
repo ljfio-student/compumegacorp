@@ -8,6 +8,7 @@ import { Strategy as BearerStrategy } from "passport-http-bearer";
 import { format } from "util";
 import controllers from "./controllers";
 import { IUser, ISession } from "./models/user";
+import io from "socket.io";
 
 // Setup Express (Static / Body Parser)
 let port = process.env.PORT || 8081;
@@ -59,8 +60,11 @@ MongoClient.connect(databaseUrl, (error: MongoError, client: MongoClient) => {
     // Setup the API routes
     let api = express.Router();
 
+    // Setup Socket.IO
+    let socketIo = io(server);
+
     // Initialise the controllers
-    controllers(api, db);
+    controllers(api, db, socketIo);
 
     app.use('/api/', api);
 });

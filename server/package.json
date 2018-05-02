@@ -22,6 +22,7 @@
     "tslint": "^5.9.1"
   },
   "dependencies": {
+    "@types/socket.io": "^1.4.33",
     "async": "^2.6.0",
     "bcrypt": "^2.0.0",
     "body-parser": "^1.18.2",
@@ -30,6 +31,7 @@
     "mongodb": "^3.0.7",
     "passport": "^0.4.0",
     "passport-http-bearer": "^1.0.1",
+    "socket.io": "^2.1.0",
     "uuid": "^3.2.1"
   }
 }

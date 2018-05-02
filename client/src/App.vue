@@ -26,6 +26,9 @@
         </ul>
 
         <ul class="navbar-nav" v-if="loggedIn">
+          <li class="nav-item">
+            <a href="#" class="nav-link"  data-toggle="modal" data-target="#chatModel">Chat</a>
+          </li>
           <li class="nav-item" >
             <router-link to="/settings" class="nav-link" data-toggle="collapse" data-target="#navbarControls">Settings</router-link>
           </li>
@@ -41,6 +44,8 @@
     </nav>
 
     <router-view/>
+
+    <chat v-if="loggedIn" />
   </div>
 </template>
 
@@ -61,6 +66,8 @@ import 'bootstrap';
 
 import auth from '@/auth'
 
+import Chat from "@/components/Chat.vue";
+
 export default {
   data () {
     return {
@@ -71,6 +78,9 @@ export default {
     auth.onChange = loggedIn => {
       this.loggedIn = loggedIn
     }
+  },
+  components: {
+    Chat
   }
 }
 </script>
