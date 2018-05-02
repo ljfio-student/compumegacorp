@@ -16,11 +16,12 @@
                     <form @submit.prevent="sendMessage">
                         <div class="form-group">
                             <label for="message-text" class="col-form-label">Message:</label>
-                            <input type="text" class="form-control" id="message-text" v-model="message" />
+                            <input type="text" class="form-control" id="message-text" v-model="message" autocomplete="off" />
                         </div>
                     </form>
                 </div>
                 <div class="modal-footer">
+                    <span class="form-control-static pull-left">{{ isConnected ? "Connected" : "Disconnected"}}</span>
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
                     <button @click="sendMessage()" type="button" class="btn btn-primary">Send</button>
                 </div>
