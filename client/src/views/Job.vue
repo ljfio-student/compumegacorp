@@ -33,6 +33,8 @@
 
         <button class="btn btn-primary" type="submit">Blame</button>
       </form>
+
+      <p v-if="isUserPresent && hasUserBlamed">Waiting for the stragglers to finish their work!</p>
     </div>
 </template>
 
