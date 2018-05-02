@@ -7,9 +7,10 @@
         <table class="table table-hover">
             <thead>
                 <tr>
-                <th scope="col">Name</th>
-                <th scope="col">Players</th>
-                <th scope="col"></th>
+                    <th scope="col">Name</th>
+                    <th scope="col">Players</th>
+                    <th scope="col">Started</th>
+                    <th scope="col"></th>
                 </tr>
             </thead>
             <tbody>
