@@ -39,3 +39,49 @@ Potentially disabling user accounts from an admin interface as well.
 Users to have the ability to change their username, email or password.
 
 ## Setup
+
+The application is split into two components: server and client. Each located within their own directory.
+
+### Server
+
+The server was developed using NodeJS, Express and MongoDB defining HTTP API methods for the client side to communicate with.
+Socket.IO was used to implement real-time chat room.
+
+This requires the use of TypeScript to compile the server.
+All dependencies can be installed by running the following command in the server directory.
+
+```bash
+npm install
+```
+
+The server can be built using the following command, this runs the TypeScript compiler.
+
+```bash
+npm run build
+```
+
+To then run the server, use the following command:
+
+```bash
+npm run start
+```
+
+### Client
+
+The client applicaiton was built using VueJS, and simply setup using the yarn webpack template.
+This front-end technology allows rapid development through live reloading and simple structured view management.
+
+For communication with the server Axios was used to make HTTP AJAX requests with HTTP `Authorization: Bearer` header.
+Socket.IO was used to implement real-time chat room.
+
+To install the decendencies required to run the client side, run the following command:
+
+```bash
+npm install
+```
+
+To run the development web server which hosts a web page accessible by a web browser, run the following command:
+
+```bash
+npm run serve
+```
