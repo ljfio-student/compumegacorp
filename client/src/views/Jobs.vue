@@ -14,9 +14,11 @@
                 </tr>
             </thead>
             <tbody>
-                <job-list-item v-for="(job, index) in jobs"
+                <job-list-item
+                    v-for="(job, index) in jobs"
                     v-bind:job="job"
                     v-bind:index="index"
+                    v-bind:user-id="userId"
                     v-bind:key="job._id" />
             </tbody>
         </table>
@@ -30,10 +32,13 @@ import JobListItem from "@/components/JobListItem";
 export default {
     data() {
         return {
-            jobs: []
+            jobs: [],
+            userId: null,
         }
     },
     created() {
+        this.userId = auth.getUserId();
+
         // Get the current list of jobs
         auth.http().get('/job')
             .then(response => {
