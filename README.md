@@ -28,6 +28,14 @@ Outlined below is a list of the functionality that has been implemented.
 - Blame a Team Member
 - Realtime Chat
 
-## Additions
+## Future Additions
+
+Look to add variable weighting to the score system when score is to be deducted.
+Making it more dangerous to get the blame higher up the management ladder.
+
+It would have been good to edit the list of available tasks within the system from an admin user interface.
+Potentially disabling user accounts from an admin interface as well.
+
+Users to have the ability to change their username, email or password.
 
 ## Setup
