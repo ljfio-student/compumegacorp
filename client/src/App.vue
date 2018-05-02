@@ -9,28 +9,28 @@
       <div class="collapse navbar-collapse" id="navbarControls">
         <ul class="navbar-nav mr-auto">
           <li class="nav-item" v-if="loggedIn">
-            <router-link to="/jobs" class="nav-link">Jobs</router-link>
+            <router-link to="/jobs" class="nav-link" data-toggle="collapse" data-target="#navbarControls">Jobs</router-link>
           </li>
           <li class="nav-item">
-            <router-link to="/about" class="nav-link">About</router-link>
+            <router-link to="/about" class="nav-link" data-toggle="collapse" data-target="#navbarControls">About</router-link>
           </li>
         </ul>
 
         <ul class="navbar-nav" v-if="!loggedIn">
           <li class="nav-item">
-            <router-link to="/register" class="nav-link">Register</router-link>
+            <router-link to="/register" class="nav-link" data-toggle="collapse" data-target="#navbarControls">Register</router-link>
           </li>
           <li class="nav-item">
-            <router-link to="/login" class="nav-link">Login</router-link>
+            <router-link to="/login" class="nav-link" data-toggle="collapse" data-target="#navbarControls">Login</router-link>
           </li>
         </ul>
 
         <ul class="navbar-nav" v-if="loggedIn">
           <li class="nav-item" >
-            <router-link to="/settings" class="nav-link">Settings</router-link>
+            <router-link to="/settings" class="nav-link" data-toggle="collapse" data-target="#navbarControls">Settings</router-link>
           </li>
           <li class="nav-item">
-            <router-link to="/logout" class="nav-link">Logout</router-link>
+            <router-link to="/logout" class="nav-link" data-toggle="collapse" data-target="#navbarControls">Logout</router-link>
           </li>
         </ul>
 
