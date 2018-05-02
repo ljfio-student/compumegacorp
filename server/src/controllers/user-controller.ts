@@ -82,6 +82,8 @@ export class UserController extends Controller {
                     email: data.email,
                     password: password,
                     score: 100,
+                    blamed: 0,
+                    escaped: 0,
                     admin: false,
                 };
 
@@ -110,13 +112,13 @@ export class UserController extends Controller {
             return res.status(401).end();
         }
 
-        // Get the user parameter
-        let id = new ObjectId(req.params.id);
-
-        if (id == null) {
+        if (req.params.id == null) {
             let user = req.user;
             res.send(user).end();
         } else {
+            // Get the user parameter
+            let id = new ObjectId(req.params.id);
+
             this.collection.findOne<ISimpleUser>({_id: id}, { fields: {_id: 1, name: 1} })
                 .then((user) => {
                     if (user) {

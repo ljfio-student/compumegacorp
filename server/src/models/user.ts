@@ -7,6 +7,8 @@ export interface IUser {
     password: string;
     admin: boolean;
     score: number;
+    blamed: number;
+    escaped: number;
 }
 
 export interface ISimpleUser {
