@@ -81,6 +81,8 @@ export class UserController extends Controller {
                     name: data.name,
                     email: data.email,
                     password: password,
+                    score: 100,
+                    admin: false,
                 };
 
                 this.collection.insertOne(user)
