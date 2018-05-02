@@ -13,8 +13,12 @@ let setup = (router: express.Router, db: Db, io: SocketIO.Server) => {
     io.on('connection', (socket) => {
         socket.join('chat');
 
-        socket.on('message', (message) => {
-            io.to('chat').emit('message', message);
+        socket.on('message', (message: string) => {
+            let newMessage = message.trim();
+
+            if (newMessage.length > 0) {
+                io.to('chat').emit('message', newMessage);
+            }
         });
     });
 };
